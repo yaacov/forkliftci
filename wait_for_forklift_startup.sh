@@ -5,7 +5,9 @@
 
 while true
 do
-  running=`kubectl get pod -n konveyor-forklift | grep -cE 'forklift.*Running'`
+  pods=`kubectl get pod -n konveyor-forklift`
+  echo "$pods"
+  running=`echo "$pods" | grep -cE 'forklift.*Running'`
   if [ "$running" -eq 4 ]; then
     echo "All expected forklift containers Up"
     break
