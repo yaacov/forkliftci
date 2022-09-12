@@ -1,9 +1,10 @@
 # Overview
 
 This document explains how to install [kind](https://kind.sigs.k8s.io/)
-("**k**ubernetes **in** **d**ocker"), create a
-[kubernetes](https://kubernetes.io/) cluster, and install
-[forklift](https://www.konveyor.io/tools/forklift/) on that cluster.
+("**k**ubernetes **in** **d**ocker"), including a local docker registry,
+create a [kubernetes](https://kubernetes.io/) cluster, build
+[forklift](https://www.konveyor.io/tools/forklift/) from source and install
+it on that cluster.
 
 We also install [kubevirt](https://kubevirt.io) so that the cluster can be
 used as a VM migration target.
@@ -17,36 +18,60 @@ the UI, because it is meant to be the target for running automated tests.
 * [go](https://golang.org/)
 * [docker](httsp://www.docker.com/) or [podman](https://podman.io/)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/)
+* [git](https://git-scm.com/)
 
 
 # All in one script
 
-Run the script [setup_everything.sh](setup_everything.sh) to get kind,
-create a cluster, install the latest release of forklift + kubevirt and
+Run the script
+[build_and_setup_everything.sh](build_and_setup_everything.sh) to get kind,
+create a local docker registry, create a cluster, get the latest sources of
+forklift, patch them to use the local registry, build the docker images,
+push the images to the local registry, deploy forklift, install kubevirt and
 grant cluster-admin role to the kind default user _abcdef_. It will take a
 few minutes and output progress info that might look like errors. Please be
 patient.
 
 See below for the individual steps.
 
-In order to build & install from sources please see
-[BUILD_AND_INSTALL_FORKLIFT_ON_KIND.md](BUILD_AND_INSTALL_FORKLIFT_ON_KIND.md).
+In order to just install the latest release of forklift please see
+[INSTALL_FORKLIFT_ON_KIND.md](INSTALL_FORKLIFT_ON_KIND.md).
 
 
 # Get kind and create the cluster
 
-Run the script [install_kind.sh](install_kind.sh) to get kind and
-create a new cluster.
+Run the script [kind_with_registry.sh](kind_with_registry.sh) to get kind and
+create a new cluster. (Original source:
+https://kind.sigs.k8s.io/docs/user/local-registry/)
 If the script is sourced instead it exports the variable $CLUSTER which can
 be used as the URL prefix for queries:
 
     $ CLUSTER=`kind get kubeconfig | grep server | cut -d ' ' -f6`
 
-# Install the latest release
 
-Run the script [k8s-deploy-forklift.sh](k8s-deploy-forklift.sh) to get
-the lates release of forklift from github and deploy it to the new cluster.
-This can take a few minutes.
+# Get forklift sources
+
+Run the script [get_forklift.sh](get_forklift.sh) to clone the github
+repositories for the forklift-operator, forklift-controller and
+forklift-validation
+
+
+# Patch for local registry
+
+In order to support our local docker registry the Makefiles and some yaml
+needs to be patched. To do this run the script
+[patch_for_local_registry.sh](patch_for_local_registry.sh) in the same directory where the
+forklift repositories were checked out.
+
+
+# Build the docker images and push them to the registry
+
+Run the script [build_forklift.sh](build_forklift.sh).
+
+
+# Deploy forklift
+
+Run the script [deploy_local_forklift.sh](deploy_local_forklift.sh).
 
 
 # Install kubevirt
@@ -78,6 +103,7 @@ The kind container:
     $ docker container ls
     CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS          PORTS                       NAMES
     298d058aa24e   kindest/node:v1.25.0   "/usr/local/bin/entr…"   12 minutes ago   Up 12 minutes   127.0.0.1:36679->6443/tcp   kind-control-plane
+    b7f23a116b8b   registry:2             "/entrypoint.sh /etc…"   12 minutes ago   Up 12 minutes   127.0.0.1:5001->5000/tcp    kind-registry
 
 The running pods should look like this:
 
