@@ -16,7 +16,7 @@ the UI, because it is meant to be the target for running automated tests.
 # Prerequisits
 
 * [go](https://golang.org/)
-* [docker](httsp://www.docker.com/) or [podman](https://podman.io/)
+* [docker](https://www.docker.com/) or [podman](https://podman.io/)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/)
 * [git](https://git-scm.com/)
 
@@ -61,7 +61,10 @@ forklift-validation
 In order to support our local docker registry the Makefiles and some yaml
 needs to be patched. To do this run the script
 [patch_for_local_registry.sh](patch_for_local_registry.sh) in the same directory where the
-forklift repositories were checked out.
+forklift repositories were checked out.  
+*Warning:* the patch matches the state of the forklift repositories on
+2022-09-12. It might become obsolete of the files which need patching are
+updated.
 
 
 # Build the docker images and push them to the registry
@@ -132,6 +135,20 @@ Or just use _kubectl_ (which will say "No resources found in
 konveyor-forklift namespace." until a provider has been created):
 
     $ kubectl get -n konveyor-forklift providers
+
+
+# Cleanup
+
+Steps for cleaning up, in case the process is to be repeated in the same
+environment:
+
+* Stop the registry container and delete it (_docker stop_, _docker container
+  rm_).
+* Delete the registry image and all forklift images (_docker rmi_).
+* Destroy the kind cluster (_kind delete cluster_).
+* Delete the kind image (_docker rmi_).
+* Delete the checked out git repos for _forklift-operator_,
+  _forklift-controller_, _forklift-validation_.
 
 
 # Documentation
