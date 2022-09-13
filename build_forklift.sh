@@ -21,4 +21,4 @@ docker push localhost:5001/forklift-operator:latest
 docker push localhost:5001/forklift-operator-bundle:latest
 docker push localhost:5001/forklift-operator-index:latest
 docker push localhost:5001/forklift-controller:latest
-docker push localhost:5001/konveyor/forklift-validation:latest
+docker push localhost:5001/forklift-validation:latest
