@@ -1,0 +1,46 @@
+name: Forklift_Build_KinD
+on:
+  workflow_dispatch:
+      name:
+        description: 'Build forklift from source and deploy it on KinD'
+        
+jobs:
+  doit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out forkliftci repository
+        uses: actions/checkout@v3
+
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+
+      - run: echo `pwd` >> $GITHUB_PATH
+
+      - run: kind_with_registry.sh
+      
+      - run: get_forklift.sh
+      
+      - run: patch_for_local_registry.sh
+      
+      - run: build_forklift.sh
+      
+      - name: Get kubectl
+        run: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      - run: chmod u+x kubectl
+      - run: kubectl version
+
+      - run: deploy_local_forklift.sh
+
+      - run: k8s-deploy-kubevirt.sh
+
+      - run: grant_permissions.sh
+
+      - run: kubectl wait deployment -n konveyor-forklift forklift-controller --for condition=Available=True --timeout=180s
+
+      - run: echo "CLUSTER=`kind get kubeconfig | grep server | cut -d ' ' -f6`" >> $GITHUB_ENV
+      - run: echo "TOKEN=`kubectl get secrets -n kube-system -o jsonpath='{.items[0].data.token-id}' | base64 -d`.`kubectl get secrets -n kube-system -o jsonpath='{.items[0].data.token-secret}' | base64 -d`" >> $GITHUB_ENV 
+
+      - name: Test call to Forklift
+        run: |
+          curl -k "$CLUSTER/apis/forklift.konveyor.io/v1beta1/namespaces/konveyor-forklift/providers" --header "Authorization: Bearer $TOKEN"
