@@ -19,8 +19,21 @@ jobs:
 
       - run: kind_with_registry.sh
       
-      - run: get_forklift.sh
-      
+      - name: Checkout forklift-operator
+        uses: actions/checkout@v3
+        with:
+          repository: konveyor/forklift-operator
+
+      - name: Checkout forklift-controller
+        uses: actions/checkout@v3
+        with:
+          repository: konveyor/forklift-controller
+
+      - name: Checkout forklift-validation
+        uses: actions/checkout@v3
+        with:
+          repository: konveyor/forklift-validation
+            
       - run: patch_for_local_registry.sh
       
       - run: build_forklift.sh
