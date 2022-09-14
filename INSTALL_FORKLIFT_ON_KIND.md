@@ -15,7 +15,7 @@ the UI, because it is meant to be the target for running automated tests.
 # Prerequisits
 
 * [go](https://golang.org/)
-* [docker](httsp://www.docker.com/) or [podman](https://podman.io/)
+* [docker](https://www.docker.com/) or [podman](https://podman.io/)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/)
 
 
