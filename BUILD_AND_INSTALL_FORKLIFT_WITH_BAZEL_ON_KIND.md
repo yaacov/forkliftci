@@ -3,7 +3,7 @@
 This document explains how to install [kind](https://kind.sigs.k8s.io/)
 ("**k**ubernetes **in** **d**ocker"), including a local docker registry,
 create a [kubernetes](https://kubernetes.io/) cluster, build
-[forklift](https://www.konveyor.io/tools/forklift/) from source and install
+[forklift](https://github.com/kubev2v/forklift) from source and install
 it on that cluster.
 
 We also install [kubevirt](https://kubevirt.io) so that the cluster can be
@@ -23,21 +23,22 @@ the UI, because it is meant to be the target for running automated tests.
 
 # All in one script
 
-Run the script
-[build_and_setup_everything.sh](build_and_setup_everything.sh) to get kind,
-create a local docker registry, create a cluster, get the latest sources of
-forklift, patch them to use the local registry, build the docker images,
-push the images to the local registry, deploy forklift, install kubevirt and
-grant cluster-admin role to the kind default user _abcdef_. It will take a
-few minutes and output progress info that might look like errors. Please be
-patient.
+Run the script [build_and_setup_everything_bazel_manually.sh]
+(build_and_setup_everything_bazel_manually.sh) to get kind, create a local
+docker registry, create a cluster, get the latest sources of forklift (from
+https://github.com/kubev2v/forklift), patch them to use the local registry,
+build the docker images, push the images to the local registry, deploy
+forklift, install kubevirt and grant cluster-admin role to the kind default
+user _abcdef_. It will take a few minutes and output progress info that
+might look like errors. Please be patient.
 
 See below for the individual steps.
 
 In order to just install the latest release of forklift please see
 [INSTALL_FORKLIFT_ON_KIND.md](INSTALL_FORKLIFT_ON_KIND.md).  
-In order to build & install the new version of forklift, with bazel and a single repo, please see
-[BUILD_AND_INSTALL_FORKLIFT_ON_KIND_BAZEL.md](BUILD_AND_INSTALL_FORKLIFT_ON_KIND_BAZEL.md).
+In order to build & install the older version of forklift, with individual
+repos, please see [BUILD_AND_INSTALL_FORKLIFT_ON_KIND.md]
+(BUILD_AND_INSTALL_FORKLIFT_ON_KIND.md).
 
 
 # Get kind and create the cluster
@@ -53,30 +54,29 @@ be used as the URL prefix for queries:
 
 # Get forklift sources
 
-Run the script [get_forklift.sh](get_forklift.sh) to clone the github
-repositories for the forklift-operator, forklift-controller and
-forklift-validation
+Run the script [get_forklift_bazel.sh](get_forklift_bazel.sh) to clone the
+github repository.
 
 
 # Patch for local registry
 
-In order to support our local docker registry the Makefiles and some yaml
-needs to be patched. To do this run the script
-[patch_for_local_registry.sh](patch_for_local_registry.sh) in the same directory where the
-forklift repositories were checked out.  
-*Warning:* the patch matches the state of the forklift repositories on
-2022-09-12. It might become obsolete of the files which need patching are
+In order to support our local docker registry (instead of quay.io) the
+.bazelrc file needs to be patched. To do this run the script
+[patch_for_local_registry_bazel.sh](patch_for_local_registry_bazel.sh) in
+the same directory where the forklift repository was checked out.  
+*Warning:* the patch matches the state of the forklift repository on
+2022-09-21. It might become obsolete if the files which need patching are
 updated.
 
 
-# Build the docker images and push them to the registry
+# Build the docker images and push them to the local registry
 
-Run the script [build_forklift.sh](build_forklift.sh).
+Run the script [build_forklift_bazel.sh](build_forklift_bazel.sh).
 
 
 # Deploy forklift
 
-Run the script [deploy_local_forklift.sh](deploy_local_forklift.sh).
+Run the script [deploy_local_forklift_bazel.sh](deploy_local_forklift_bazel.sh).
 
 
 # Install kubevirt
@@ -149,8 +149,7 @@ environment:
 * Delete the registry image and all forklift images (_docker rmi_).
 * Destroy the kind cluster (_kind delete cluster_).
 * Delete the kind image (_docker rmi_).
-* Delete the checked out git repos for _forklift-operator_,
-  _forklift-controller_, _forklift-validation_.
+* Delete the checked out git repo _forklift_rhy.
 
 
 # Documentation
