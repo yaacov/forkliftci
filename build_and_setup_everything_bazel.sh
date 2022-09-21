@@ -2,8 +2,6 @@
 
 . ./kind_with_registry.sh
 
-./patch_for_local_registry_bazel.sh
-
 ./build_forklift_bazel.sh
 
 ./deploy_local_forklift_bazel.sh
