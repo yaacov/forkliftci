@@ -1,7 +1,8 @@
 #!/bin/sh
 echo "Running $0"
 
-cd forklift
+# Change the dir to FORKLIFT_DIR (default forklift)
+cd ${FORKLIFT_DIR:-forklift}
 
 export REGISTRY=localhost:5001
 export REGISTRY_TAG=latest
