@@ -3,55 +3,43 @@ on:
   workflow_dispatch:
       name:
         description: 'Build forklift from source and deploy it on KinD'
-        
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
-  doit:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Check out forkliftci repository
         uses: actions/checkout@v3
 
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-
       - name: Add cwd to path for kubectl.
         run: echo `pwd` >> $GITHUB_PATH
 
-      - run: kind_with_registry.sh
-      
-      - name: Checkout forklift-operator
+      - name: Checkout forklift
         uses: actions/checkout@v3
         with:
-          repository: konveyor/forklift-operator
-          path: forklift-operator
+          repository: kubev2v/forklift
+          path: forklift
 
-      - name: Checkout forklift-controller
-        uses: actions/checkout@v3
+      - name: Bazel cache
+        id: bazel-cache
+        uses: actions/cache@v3
         with:
-          repository: konveyor/forklift-controller
-          path: forklift-controller
+          path: ~/.cache/bazel
+          key: ${{ runner.os }}-bazel-cache
 
-      - name: Checkout forklift-validation
-        uses: actions/checkout@v3
-        with:
-          repository: konveyor/forklift-validation
-          path: forklift-validation
-            
-      - run: patch_for_local_registry.sh
-      
-      - run: build_forklift.sh
-      
       - name: Get kubectl
         run: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
       - run: chmod u+x kubectl
+
+      - run: build_and_setup_everything_bazel.sh
+
       - run: kubectl version
-
-      - run: deploy_local_forklift.sh
-
-      - run: k8s-deploy-kubevirt.sh
-
-      - run: grant_permissions.sh
 
       - run: kubectl wait deployment -n konveyor-forklift forklift-controller --for condition=Available=True --timeout=180s
       
