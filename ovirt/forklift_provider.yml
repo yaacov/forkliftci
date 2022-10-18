@@ -1,0 +1,28 @@
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: ovirt-provider-secret
+  namespace: konveyor-forklift
+  labels:
+    createdForResource: ovirt-provider
+    createdForResourceType: providers
+data:
+  # insecureSkipVerify: 1
+  insecureSkipVerify: MQ==
+  password: MTIzNDU2
+  user: YWRtaW5AaW50ZXJuYWw=
+type: Opaque
+
+---
+apiVersion: forklift.konveyor.io/v1beta1
+kind: Provider
+metadata:
+  name: ovirt-provider
+  namespace: konveyor-forklift
+spec:
+  secret:
+    name: ovirt-provider-secret
+    namespace: konveyor-forklift
+  type: ovirt
+  url: https://fakeovirt:12346/ovirt-engine/api
