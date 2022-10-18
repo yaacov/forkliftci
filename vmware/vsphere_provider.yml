@@ -1,0 +1,29 @@
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: vsphere-provider-secret
+  namespace: konveyor-forklift
+  labels:
+    createdForResource: vsphere-provider
+    createdForResourceType: providers
+data:
+  password: MTIzNDU2Cg==
+  thumbprint: >-
+    MkM6MTE6RUQ6RDc6MTM6ODc6N0Q6QjU6NzQ6MTg6Qjg6MUM6NDI6QzI6NTY6MUY6MEQ6Qjk6NUI6Qjk=
+  user: YWRtaW5pc3RyYXRvckB2c3BoZXJlLmxvY2Fs
+type: Opaque
+---
+apiVersion: forklift.konveyor.io/v1beta1
+kind: Provider
+metadata:
+  name: vsphere-provider
+  namespace: konveyor-forklift
+spec:
+  secret:
+    name: vsphere-provider-secret
+    namespace: konveyor-forklift
+  settings:
+    vddkInitImage: 'quay.io/lrotenbe/vddk:7.0.3'
+  type: vsphere
+  url: 'https://vcsim:8989/sdk'

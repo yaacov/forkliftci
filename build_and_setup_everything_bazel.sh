@@ -6,6 +6,8 @@
 
 ./deploy_local_forklift_bazel.sh
 
+./vmware/setup.sh
+
 ./ovirt/setup.sh
 
 ./k8s-deploy-kubevirt.sh
