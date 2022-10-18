@@ -42,7 +42,7 @@ jobs:
       - run: kubectl version
 
       - run: kubectl wait deployment -n konveyor-forklift forklift-controller --for condition=Available=True --timeout=180s
-      
+
       - run: kubectl get pods -n konveyor-forklift
 
       - run: kubectl get providers -n konveyor-forklift

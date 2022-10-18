@@ -8,6 +8,8 @@
 
 ./vmware/setup.sh
 
+./ovirt/setup.sh
+
 ./k8s-deploy-kubevirt.sh
 
 . ./grant_permissions.sh

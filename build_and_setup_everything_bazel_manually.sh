@@ -10,6 +10,8 @@
 
 ./deploy_local_forklift_bazel.sh
 
+./ovirt/setup.sh
+
 ./k8s-deploy-kubevirt.sh
 
 . ./grant_permissions.sh
