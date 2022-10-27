@@ -6,6 +6,8 @@ set -o errexit
 
 go install sigs.k8s.io/kind@v0.15.0
 
+mkdir -p /tmp/kind_storage
+chmod 777 /tmp/kind_storage
 
 # create registry container unless it already exists
 reg_name='kind-registry'
@@ -20,6 +22,11 @@ fi
 cat <<EOF | kind create cluster --config=-
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraMounts:
+    - hostPath: /tmp/kind_storage
+      containerPath: /data
 containerdConfigPatches:
 - |-
   [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:${reg_port}"]
@@ -45,5 +52,6 @@ data:
     help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
 EOF
 
+kubectl apply -f add_pv.yml
 
 export CLUSTER=`kind get kubeconfig | grep server | cut -d ' ' -f6`
