@@ -19,7 +19,7 @@ the UI, because it is meant to be the target for running automated tests.
 * [docker](https://www.docker.com/) or [podman](https://podman.io/)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/)
 * [git](https://git-scm.com/)
-
+* gcc with glibc-static package installed
 
 # All in one script
 
@@ -56,17 +56,6 @@ be used as the URL prefix for queries:
 
 Run the script [get_forklift_bazel.sh](get_forklift_bazel.sh) to clone the
 github repository.
-
-
-# Patch for local registry
-
-In order to support our local docker registry (instead of quay.io) the
-.bazelrc file needs to be patched. To do this run the script
-[patch_for_local_registry_bazel.sh](patch_for_local_registry_bazel.sh) in
-the same directory where the forklift repository was checked out.  
-*Warning:* the patch matches the state of the forklift repository on
-2022-09-21. It might become obsolete if the files which need patching are
-updated.
 
 
 # Build the docker images and push them to the local registry
