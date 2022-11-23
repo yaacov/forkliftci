@@ -1,0 +1,14 @@
+load(
+    "@io_bazel_rules_docker//container:container.bzl",
+    "container_pull",
+    "container_push",
+)
+
+container_push(
+    name = "push-forklift-virt-v2v-stub",
+    format = "Docker",
+    image = "//stub-images/virt-v2v-stub:forklift-virt-v2v-stub",
+    registry = "$${REGISTRY:-quay.io}",
+    repository = "$${REGISTRY_ACCOUNT:-}$${REGISTRY_ACCOUNT:+/}forklift-virt-v2v-stub",
+    tag = "$${REGISTRY_TAG:-devel}",
+)
