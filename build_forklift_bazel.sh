@@ -1,8 +1,13 @@
 #!/bin/sh
 echo "Running $0"
 
+set +e
+
 # Change the dir to FORKLIFT_DIR (default forklift)
 cd ${FORKLIFT_DIR:-forklift}
+
+# verify there is WORKSPACE file
+[ ! -e WORSKPACE ] && (echo "this script must run inside a forklift repo" ; exit 2)
 
 # Copy the stub-images under the bazel workspace
 cp -fr ../stub-images .
@@ -16,4 +21,5 @@ bazel run push-forklift-validation
 bazel run push-forklift-operator
 bazel run push-forklift-operator-bundle --action_env CONTROLLER_IMAGE=${REGISTRY}/forklift-controller:${REGISTRY_TAG} --action_env VALIDATION_IMAGE=${REGISTRY}/forklift-validation:${REGISTRY_TAG} --action_env OPERATOR_IMAGE=${REGISTRY}/forklift-operator:${REGISTRY_TAG} --action_env VIRT_V2V_IMAGE=${REGISTRY}/forklift-virt-v2v-stub:${REGISTRY_TAG}
 bazel run push-forklift-operator-index --action_env REGISTRY=${REGISTRY} --action_env REGISTRY_TAG=${REGISTRY_TAG} --action_env OPM_OPTS="--use-http"
+bazel run //stub-images:push-vddk-test-vmdk
 bazel run //stub-images:push-forklift-virt-v2v-stub

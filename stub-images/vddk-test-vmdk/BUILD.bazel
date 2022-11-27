@@ -1,0 +1,18 @@
+load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+
+container_image(
+    name = "vddk-test-image",
+    entrypoint = "mkdir -p /opt/testing && cp -f /libvddk-test-plugin.so /opt/testing/libvddk-test-plugin.so && qemu-img convert -f raw -O vmdk /cirros.raw /opt/testing/nbdtest.img",
+    files = [
+        ":vddk-test-plugin",
+        "@cirros//file",
+    ],
+    base = "//virt-v2v:forklift-virt-v2v",
+    user = "1001",
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "vddk-test-plugin",
+    srcs = ["vddk-test-plugin.c"],
+)

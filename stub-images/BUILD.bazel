@@ -12,3 +12,12 @@ container_push(
     repository = "$${REGISTRY_ACCOUNT:-}$${REGISTRY_ACCOUNT:+/}forklift-virt-v2v-stub",
     tag = "$${REGISTRY_TAG:-devel}",
 )
+
+container_push(
+    name = "push-vddk-test-vmdk",
+    format = "Docker",
+    image = "//stub-images/vddk-test-vmdk:vddk-test-image",
+    registry = "$${REGISTRY:-quay.io}",
+    repository = "$${REGISTRY_ACCOUNT:-}$${REGISTRY_ACCOUNT:+/}vddk-test-vmdk",
+    tag = "$${REGISTRY_TAG:-devel}",
+)

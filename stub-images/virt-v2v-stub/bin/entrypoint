@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 qemu-img info /mnt/disks/disk0/disk.img
-qemu-img convert -f raw -O qcow2 /mnt/disks/disk0/disk.img /mnt/disks/disk0/disk.qcow2
+qemu-img convert -f vmdk -O raw /mnt/disks/disk0/disk.img /mnt/disks/disk0/disk.raw
 
 exit 0
