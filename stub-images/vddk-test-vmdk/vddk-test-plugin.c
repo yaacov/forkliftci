@@ -87,7 +87,7 @@ int fakevddk_pread(void *handle, void *buf, uint32_t count, uint64_t offset, uin
 
 struct nbdkit_plugin fakevddk = {
     .name            = "vddk",
-    .longname        = "Simulated VDDK plugin for CDI testing",
+    .longname        = "Simulated VDDK plugin for Forklift testing",
     .version         = "N/A",
     .close           = fakevddk_close,
     .config          = fakevddk_config,
