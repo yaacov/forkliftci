@@ -1,0 +1,39 @@
+load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+load("@io_bazel_rules_docker//docker/util:run.bzl", "container_run_and_extract")
+
+container_image(
+    name = "virt-v2v-cirros",
+    entrypoint = "",
+    files = [
+        "@cirros//file",
+    ],
+    base = "//virt-v2v:forklift-virt-v2v",
+    user = "1001",
+    visibility = ["//visibility:public"],
+)
+
+
+container_run_and_extract(
+    name = "convert_to_vmdk",
+    image = ":virt-v2v-cirros.tar",
+    commands = ["qemu-img convert -f raw -O vmdk /cirros.raw /tmp/cirros.vmdk",],
+    extract_file = "/tmp/cirros.vmdk"
+)
+
+
+container_image(
+    name = "vddk-test-image",
+    entrypoint = "mkdir -p /opt/testing && cp -f /libvddk-test-plugin.so /opt/testing/libvddk-test-plugin.so && cp -f /cirros.vmdk /opt/testing/nbdtest.img",
+    files = [
+        ":vddk-test-plugin",
+        "convert_to_vmdk/tmp/cirros.vmdk",
+    ],
+    base = "@ubi8-minimal//image",
+    user = "1001",
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "vddk-test-plugin",
+    srcs = ["vddk-test-plugin.c"],
+)

@@ -24,6 +24,6 @@ spec:
     name: vsphere-provider-secret
     namespace: konveyor-forklift
   settings:
-    vddkInitImage: 'quay.io/kubevirt/vddk-test'
+    vddkInitImage: 'quay.io/kubev2v/vddk-test'
   type: vsphere
   url: 'https://vcsim.konveyor-forklift:8989/sdk'
