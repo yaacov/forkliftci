@@ -1,6 +1,13 @@
 #!/bin/sh
 
+[[ -z "${REMOTE_DOCKER_HOST}" ]] || . ./setup_remote_docker_kind.sh
+
+
+[[ -z "${REMOTE_DOCKER_HOST}" ]] || setup_remote_docker
+
 . ./kind_with_registry.sh
+
+[[ -z "${REMOTE_DOCKER_HOST}" ]] || { setup_kind_sshtunnel  ; trap cleanup_kind_sshtunnel ERR ;  } 
 
 ./get_forklift_bazel.sh
 
