@@ -40,6 +40,9 @@ In order to build & install the older version of forklift, with individual
 repos, please see [BUILD_AND_INSTALL_FORKLIFT_ON_KIND.md]
 (BUILD_AND_INSTALL_FORKLIFT_ON_KIND.md).
 
+It is also possible to install kind on a remote docker host by setting the `REMOTE_DOCKER_HOST`
+env var, i.e., `REMOTE_DOCKER_HOST=<target-docker-host> build_and_setup_everything_bazel_manually.sh`.
+Note: this only works with a docker host using ssh connection.
 
 # Get kind and create the cluster
 
