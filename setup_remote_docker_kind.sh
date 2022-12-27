@@ -8,7 +8,6 @@ cleanup_kind_sshtunnel() {
 }
 
 setup_kind_sshtunnel() {
-
     remote_port=$(kind get kubeconfig | grep server |  awk -F '1:' '{print $2}')
     ssh -f -N \
     -L ${remote_port}:127.0.0.1:${remote_port} ${REMOTE_DOCKER_HOST} \
