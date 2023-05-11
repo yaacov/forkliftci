@@ -32,6 +32,11 @@ nodes:
   extraMounts:
     - hostPath: /var/tmp/kind_storage
       containerPath: /data
+  extraPortMappings:
+    - containerPort: 30051
+      hostPort: 30051
+    - containerPort: 30050
+      hostPort: 30050      
 featureGates:
   LegacyServiceAccountTokenNoAutoGeneration: false      
 containerdConfigPatches:
